@@ -87,8 +87,9 @@ p_t = likelihood.p(theta, t_bin_centres, pc0, N_l_max)
 p_t = p_t / np.max(p_t)
 
 fig, ax = plt.subplots()
-ax.plot(t_bin_centres, t_bin_values)
-ax.plot(t_bin_centres, p_t)
+ax.plot(t_bin_centres, t_bin_values, label='histogram')
+ax.plot(t_bin_centres, p_t, label='likelihood estimate')
+ax.legend()
 plt.show()
 
 #t = np.array([1, 2, 3, 4])

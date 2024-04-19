@@ -27,6 +27,9 @@ def p(theta, t, pc0, N_l_max=None):
     # using Monte Carlo
     if pc0 < 1:
         
+        # Probability that C = 1
+        pc1 = 1 - pc0
+
         # No. Monte Carlo samples
         N_MC = 10000
 
@@ -40,8 +43,9 @@ def p(theta, t, pc0, N_l_max=None):
             t_r_samples = p_r.rvs(N_MC)
             
             # Compute terms for all values of t
+            c = pc1**(n-1)
             for i in range(len(t)):
-                likelihood[i] += np.mean(_f(t[i] - t_r_samples, t[i], p_l))
+                likelihood[i] += pc1 * np.mean(_f(t[i] - t_r_samples, t[i], p_l))
             
 
     likelihood *= pc0
