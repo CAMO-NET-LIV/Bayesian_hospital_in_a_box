@@ -50,8 +50,8 @@ def test_first_term(plots=False):
 # Problem definition
 lambda_r = 4
 lambda_l = 2.5
-pc0 = 0.8
-N_l_max = 6
+pc0 = 0.7
+N_l_max = 5
 theta = np.array([lambda_r, lambda_l])
 
 # Define generating distributions
@@ -59,23 +59,24 @@ p_r = expon(scale=1/lambda_r)
 p_l = expon(scale=1/lambda_l)
 
 # No. samples to generate for histrogram
-N = 50000
+N = 10000
 
 t_samples = np.zeros(N)
 for n in range(N):
 
-    # Initialise with sample of transport time and sinlge trip through lab
-    t_samples[n] = p_r.rvs() + p_l.rvs()
+    # Initialise with sample of transport time
+    #t_samples[n] = p_r.rvs()
 
     # Loops through the lab
     for i in range(N_l_max):
-    
-        # Establish if sample will leave lab
+
+        # Time through lab
+        t_samples[n] += p_l.rvs()
+
+        # Establish if sample need lab analysis
         u = np.random.rand()
         if u < pc0:
-            break
-        else:
-            t_samples[n] += p_l.rvs()
+            break        
 
 # Evaluate histogram, standardising results
 t_bin_values, t_bin_edges = np.histogram(t_samples)
@@ -83,7 +84,7 @@ t_bin_values = t_bin_values / np.max(t_bin_values)
 t_bin_centres = (t_bin_edges[:-1] + t_bin_edges[1:]) / 2
 
 # Evaluate likelihood at bin centres of histogram
-p_t = likelihood.p(theta, t_bin_centres, pc0, N_l_max)
+p_t = likelihood.p_total_lab(theta, t_bin_centres, pc0, N_l_max)
 p_t = p_t / np.max(p_t)
 
 fig, ax = plt.subplots()

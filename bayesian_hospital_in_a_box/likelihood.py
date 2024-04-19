@@ -27,6 +27,9 @@ def p(theta, t, pc0, N_l_max=None):
     # using Monte Carlo
     if pc0 < 1:
         
+        # Define distribution over transport time
+        p_r = expon(scale=1/lambda_r)
+
         # Probability that C = 1
         pc1 = 1 - pc0
 
@@ -35,10 +38,13 @@ def p(theta, t, pc0, N_l_max=None):
 
         for n in range(2, N_l_max + 1):
             
-            # Define distributions
-            p_r = expon(scale=1/lambda_r)
             p_l = gamma(a=n, scale=1/lambda_l)
             
+            # Normalising const.
+            norm_const = 0
+            for k in range(N_l_max):
+                norm_const += pc1**(n-1) * pc0
+
             # Generate samples from p_r
             t_r_samples = p_r.rvs(N_MC)
             
@@ -49,6 +55,31 @@ def p(theta, t, pc0, N_l_max=None):
             
 
     likelihood *= pc0
+    return likelihood
+
+def p_total_lab(theta, t, pc0, N_l_max=None):
+    """
+    Description
+    -----------
+    temp - for debugging
+    """
+    
+    # Extract model parameters
+    lambda_r, lambda_l = theta[0], theta[1]
+    
+    # Probability that C = 1
+    pc1 = 1 - pc0
+
+    # No. Monte Carlo samples
+    N_MC = 10000
+
+    likelihood = np.zeros(len(t))
+    for n in range(1, N_l_max + 1):
+            
+        p_l = gamma(a=n, scale=1/lambda_l)
+            
+        likelihood += pc0 * pc1**(n-1) * p_l.pdf(t)
+        
     return likelihood
 
 def _f(t_l, t_r_plus_l, p_l):
