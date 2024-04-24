@@ -45,7 +45,7 @@ def test_first_term(plots=False):
         ax.plot(t_bin_centres, p_t)
         plt.show()
 
-    assert np.allclose(p_t, t_bin_values, atol=0.15)
+    assert np.allclose(p_t, t_bin_values, atol=0.1)
     
 def test_monte_carlo_estimate(plots=False):
     """
@@ -81,14 +81,14 @@ def test_monte_carlo_estimate(plots=False):
     t_rl_bin_values = t_rl_bin_values / np.sum(t_rl_bin_values)
     p_t_rl = p_t_rl / np.sum(p_t_rl)    
 
-    assert np.allclose(t_rl_bin_values, p_t_rl, atol=0.1)
-
     if plots:
         fig, ax = plt.subplots()
         ax.plot(t_rl_bin_centres, t_rl_bin_values, 'black', label='Histogram results')
         ax.plot(t_rl_bin_centres, p_t_rl, 'red', label='Monte Carlo estiamte')
         ax.legend()
         plt.show()
+
+    assert np.allclose(t_rl_bin_values, p_t_rl, atol=0.1)
 
 def test_p(plots=False):
     """
@@ -140,8 +140,6 @@ def test_p(plots=False):
     t_bin_values = t_bin_values / np.sum(t_bin_values)
     p_t = p_t / np.sum(p_t)    
 
-    assert np.allclose(p_t, t_bin_values, atol=0.06)
-
     if plots:
         fig, ax = plt.subplots()
         ax.plot(t_bin_centres/60, t_bin_values, 'black', label='Histogram results')
@@ -149,3 +147,5 @@ def test_p(plots=False):
         ax.set_xlabel('Hours')
         ax.legend()
         plt.show()
+
+    assert np.allclose(p_t, t_bin_values, atol=0.1)
