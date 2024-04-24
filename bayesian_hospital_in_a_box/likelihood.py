@@ -61,7 +61,7 @@ def exp_gamma_convolution_mc(lambda_r, lambda_l, n, t_rl):
     p_l = gamma(a=n, scale=1/lambda_l)
     
     # Generate samples from exponential distribution
-    N = 10000
+    N = 1000
     t_r_samples = p_r.rvs(N)
     
     # Realise Monte Carlo estimates of convolution integral at point t_rl
