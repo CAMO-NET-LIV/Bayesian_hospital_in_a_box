@@ -26,35 +26,14 @@ def p(theta, t, pc0, N_l_max=None):
     # If p(C=0) is less than 1 then the remaining terms need to be estimated
     # using Monte Carlo
     if pc0 < 1:
-        
-        # Define distribution over transport time
-        p_r = expon(scale=1/lambda_r)
 
         # Probability that C = 1
         pc1 = 1 - pc0
 
-        # No. Monte Carlo samples
-        N_MC = 10000
+        # Add additional terms that are appxoimated using Monte-Carlo
+        for n in range(2, N_l_max + 1):            
+            likelihood += pc1**(n-1) * exp_gamma_convolution_mc(lambda_r, lambda_l, n, t)
 
-        for n in range(2, N_l_max + 1):
-            
-            p_l = gamma(a=n, scale=1/lambda_l)
-            
-            # Normalising const.
-            norm_const = 0
-            for k in range(N_l_max):
-                norm_const += pc1**(n-1) * pc0
-
-            # Generate samples from p_r
-            t_r_samples = p_r.rvs(N_MC)
-            
-            # Compute terms for all values of t
-            c = pc1**(n-1)
-            for i in range(len(t)):
-                likelihood[i] += pc1 * np.mean(_f(t[i] - t_r_samples, t[i], p_l))
-            
-
-    likelihood *= pc0
     return likelihood
 
 def exp_gamma_convolution_mc(lambda_r, lambda_l, n, t_rl):
@@ -88,7 +67,6 @@ def exp_gamma_convolution_mc(lambda_r, lambda_l, n, t_rl):
     # Realise Monte Carlo estimates of convolution integral at point t_rl
     F = _f(t_rl - t_r_samples, t_rl, p_l)
     return np.mean(F)
-    
 
 def _f(t_l, t_r_plus_l, p_l):
       """ Function that is equal to p_l(t_l) if of t_l are in [0, t_{r+l}]
