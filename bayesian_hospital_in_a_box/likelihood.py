@@ -31,7 +31,7 @@ def p(theta, t, pc0, N_l_max=None):
         pc1 = 1 - pc0
 
         # Add additional terms that are appxoimated using Monte-Carlo
-        for n in range(2, N_l_max + 1):            
+        for n in range(2, N_l_max + 1):
             likelihood += pc1**(n-1) * exp_gamma_convolution_mc(lambda_r, lambda_l, n, t)
 
     return likelihood

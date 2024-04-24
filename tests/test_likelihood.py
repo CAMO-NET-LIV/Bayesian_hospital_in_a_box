@@ -29,7 +29,7 @@ def test_first_term(plots=False):
     t_samples = t_r_samples + t_l_samples
 
     # Evaluate histogram
-    t_bin_values, t_bin_edges = np.histogram(t_samples)    
+    t_bin_values, t_bin_edges = np.histogram(t_samples, bins=20)    
     t_bin_centres = (t_bin_edges[:-1] + t_bin_edges[1:]) / 2
 
     # Evaluate likelihood at bin centres of histogram
@@ -57,20 +57,20 @@ def test_monte_carlo_estimate(plots=False):
     np.random.seed(42)
    
     # Problem definition
-    lambda_r = 4
-    lambda_l = 2.5
+    lambda_r = 1 / (2 * 60)
+    lambda_l = 1 / (8 * 60)
     n = 5
 
     # Define generating distributions
     p_r = expon(scale=1/lambda_r)
     p_l = gamma(a=n, scale=1/lambda_l)
 
-    # Generate samples and compute summatoin
+    # Generate samples and compute summation
     N = int(1e5)
     t_rl_samples = p_r.rvs(N) + p_l.rvs(N)
 
     # Evaluate histogram, standardising results
-    t_rl_bin_values, t_rl_bin_edges = np.histogram(t_rl_samples)
+    t_rl_bin_values, t_rl_bin_edges = np.histogram(t_rl_samples, bins=20)
     t_rl_bin_values = t_rl_bin_values / np.max(t_rl_bin_values)
     t_rl_bin_centres = (t_rl_bin_edges[:-1] + t_rl_bin_edges[1:]) / 2
 
@@ -85,9 +85,11 @@ def test_monte_carlo_estimate(plots=False):
 
     if plots:
         fig, ax = plt.subplots()
-        ax.plot(t_rl_bin_centres, t_rl_bin_values, 'black', label='Histogram results')
-        ax.plot(t_rl_bin_centres, p_t_rl, 'red', label='Monte Carlo estiamte')
+        ax.plot(t_rl_bin_centres/60, t_rl_bin_values, 'black', label='Histogram results')
+        ax.plot(t_rl_bin_centres/60, p_t_rl, 'red', label='Monte Carlo estimate')
         ax.legend()
+        ax.set_xlabel('Hours')
+        ax.set_title("Convolution between Exp(lambda_r) and Gamma(n, lambda_l) with n = " + str(n))
         plt.show()
 
     assert np.allclose(t_rl_bin_values, p_t_rl, atol=0.1)
@@ -103,7 +105,7 @@ def test_p(plots=False):
     lambda_r = 1 / (2 * 60)
     lambda_l = 1 / (8 * 60)
     pc0 = 0.2
-    N_l_max = 3
+    N_l_max = 30
     theta = np.array([lambda_r, lambda_l])
 
     # Define generatrive distributions
@@ -130,7 +132,7 @@ def test_p(plots=False):
                 break
 
     # Evaluate histogram
-    t_bin_values, t_bin_edges = np.histogram(t_samples)    
+    t_bin_values, t_bin_edges = np.histogram(t_samples, bins=20)    
     t_bin_centres = (t_bin_edges[:-1] + t_bin_edges[1:]) / 2
 
     # Evaluate likelihood at bin centres of histogram
