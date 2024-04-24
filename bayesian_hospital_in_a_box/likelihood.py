@@ -34,7 +34,7 @@ def p(theta, t, pc0, N_l_max=None):
         for n in range(2, N_l_max + 1):
             likelihood += pc1**(n-1) * exp_gamma_convolution_mc(lambda_r, lambda_l, n, t)
 
-    likelihood += pc1**(N_l_max) * exp_gamma_convolution_mc(lambda_r, lambda_l, N_l_max, t)
+        likelihood += pc1**(N_l_max) * exp_gamma_convolution_mc(lambda_r, lambda_l, N_l_max, t)
 
     return likelihood
 
