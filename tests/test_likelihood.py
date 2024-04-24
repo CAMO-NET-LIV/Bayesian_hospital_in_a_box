@@ -13,8 +13,8 @@ def test_first_term(plots=False):
 
     # Problem parameters; noting that pc0=1 means we only
     # analyse the first term in the likelihood
-    lambda_r = 4
-    lambda_l = 2.5
+    lambda_r = 1 / (2 * 60)
+    lambda_l = 1 / (8 * 60)
     pc0 = 1
     theta = np.array([lambda_r, lambda_l])
 
@@ -41,8 +41,10 @@ def test_first_term(plots=False):
 
     if plots:
         fig, ax = plt.subplots()
-        ax.plot(t_bin_centres, t_bin_values)
-        ax.plot(t_bin_centres, p_t)
+        ax.plot(t_bin_centres/60, t_bin_values, 'black', label='Histogram')
+        ax.plot(t_bin_centres/60, p_t, 'red', label='Closed-form expression')
+        ax.legend()
+        ax.set_xlabel('Hours')
         plt.show()
 
     assert np.allclose(p_t, t_bin_values, atol=0.1)
@@ -98,10 +100,10 @@ def test_p(plots=False):
     np.random.seed(42)
 
     # Example problem parameters; 
-    lambda_r = 1 / (6 * 60)
-    lambda_l = 1 / (20 * 60)
-    pc0 = 0.7
-    N_l_max = 7
+    lambda_r = 1 / (2 * 60)
+    lambda_l = 1 / (8 * 60)
+    pc0 = 0.2
+    N_l_max = 3
     theta = np.array([lambda_r, lambda_l])
 
     # Define generatrive distributions
@@ -143,7 +145,7 @@ def test_p(plots=False):
     if plots:
         fig, ax = plt.subplots()
         ax.plot(t_bin_centres/60, t_bin_values, 'black', label='Histogram results')
-        ax.plot(t_bin_centres/60, p_t, 'red', label='Monte Carlo estiamte')
+        ax.plot(t_bin_centres/60, p_t, 'red', label='Monte Carlo estimate')
         ax.set_xlabel('Hours')
         ax.legend()
         plt.show()
