@@ -5,6 +5,8 @@ packages = find_packages(".")
 setup(
     name='hospital_in_a_box',
     version='0.1.0',
+    author='Peter L Green, Alessandro Gerada, Conor Rosato',
+    author_email='p.l.green@liverpool.ac.uk',
     packages=packages
 )
 
