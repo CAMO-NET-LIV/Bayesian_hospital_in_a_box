@@ -7,6 +7,7 @@ setup(
     version='0.1.0',
     author='Peter L Green, Alessandro Gerada, Conor Rosato',
     author_email='p.l.green@liverpool.ac.uk',
-    packages=packages
+    packages=packages,
+    install_requires=["numpy", "scipy"]
 )
 
