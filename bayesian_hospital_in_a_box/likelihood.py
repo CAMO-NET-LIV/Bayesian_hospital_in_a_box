@@ -58,7 +58,23 @@ def p(theta, t, pc0, N_l_max=None):
     return likelihood
 
 def exp_gamma_convolution_mc(lambda_r, lambda_l, n, t_rl):
-    """ description...
+    """
+    Description
+    -----------
+        Realises a Monte-Carlo estimate of the convolutation between the
+        distributions p_r and p_l, where p_r = Exp(lambda_r) and
+        p_l = Gamma(n, lambda_l) (see Appendix A of paper).
+    
+    Parameters
+    ----------
+        - lambda_r : rate parameter of p_r
+        - lambda_l : rate parameter of p_l
+        - n : shape parameter of p_l
+        - t_rl : point where we approximate the convolution integral
+    
+    Returns
+    -------
+        - mean of F i.e. Monte Carlo estimate of convolution
     """
     
     # Define distributions
