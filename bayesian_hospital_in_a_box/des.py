@@ -56,7 +56,7 @@ def simulate_des(lambda_r,
     return log
 
 
-def simulated_histogram(log: dict[str, dict[str, float]],
+def simulated_histogram(log: dict[str, float],
                         theta,
                         pc0,
                         n_l_max) -> None:
@@ -79,6 +79,3 @@ def simulated_histogram(log: dict[str, dict[str, float]],
     ax.set_xlabel('Hours')
     ax.legend()
     plt.show()
-
-d = simulate_des(1/60, 1/90, 0.2, 3, 10000, seed=42, print_trace=False)
-simulated_histogram(d, np.array([1/60, 1/90]), 0.2, 3)
