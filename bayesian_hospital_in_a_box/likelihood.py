@@ -20,21 +20,18 @@ def p(theta, t, pc0, N_l_max=None):
     lambda_r, lambda_l = theta[0], theta[1]
     
     # First term in the likelihood
-    likelihood = lambda_r * lambda_l / (lambda_l - lambda_r)
+    likelihood = _pn(n=1, pc0=pc0, N_l_max=N_l_max)
+    likelihood *= lambda_r * lambda_l / (lambda_l - lambda_r)
     likelihood *= (np.exp(-lambda_r * t) - np.exp(-lambda_l * t))
 
     # If p(C=0) is less than 1 then the remaining terms need to be estimated
     # using Monte Carlo
     if pc0 < 1:
 
-        # Probability that C = 1
-        pc1 = 1 - pc0
-
         # Add additional terms that are appxoimated using Monte-Carlo
         for n in range(2, N_l_max + 1):
-            likelihood += pc1**(n-1) * exp_gamma_convolution_mc(lambda_r, lambda_l, n, t)
-
-        #likelihood += pc1**(N_l_max) * exp_gamma_convolution_mc(lambda_r, lambda_l, N_l_max, t)
+            likelihood += (_pn(n=n, pc0=pc0, N_l_max=N_l_max) *
+                           exp_gamma_convolution_mc(lambda_r, lambda_l, n, t))
 
     return likelihood
 
