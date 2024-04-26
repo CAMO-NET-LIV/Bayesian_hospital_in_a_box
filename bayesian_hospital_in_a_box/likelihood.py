@@ -38,6 +38,22 @@ def p(theta, t, pc0, N_l_max=None):
 
     return likelihood
 
+def p_total_lab_time(t_l, lambda_l, pc0, N_l_max):
+
+    p_t_l = 0
+    for n in range(1, N_l_max + 1):
+        p_l = gamma(a=n, scale=1/lambda_l)
+        p_t_l += p_l.pdf(t_l) * _pn(n, pc0, N_l_max)
+    return p_t_l
+
+def _pn(n, pc0, N_l_max):
+    
+    pc1 = 1 - pc0
+    pn = pc1**(n - 1) * pc0
+    if n == N_l_max:
+        pn += pc1**N_l_max
+    return pn
+
 def exp_gamma_convolution_mc(lambda_r, lambda_l, n, t_rl):
     """
     Description

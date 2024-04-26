@@ -94,6 +94,9 @@ def test_monte_carlo_estimate(plots=False):
 
     assert np.allclose(t_rl_bin_values, p_t_rl, atol=0.1)
 
+def test_total_lab_time(plots=False):
+    pass
+
 def test_p(plots=False):
     """
     Test overall expression for the likelihood (i.e. likelihood.p) against
