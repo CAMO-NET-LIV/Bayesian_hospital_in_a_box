@@ -20,21 +20,54 @@ def p(theta, t, pc0, N_l_max=None):
     lambda_r, lambda_l = theta[0], theta[1]
     
     # First term in the likelihood
-    likelihood = lambda_r * lambda_l / (lambda_l - lambda_r)
+    likelihood = _pn(n=1, pc0=pc0, N_l_max=N_l_max)
+    likelihood *= lambda_r * lambda_l / (lambda_l - lambda_r)
     likelihood *= (np.exp(-lambda_r * t) - np.exp(-lambda_l * t))
 
     # If p(C=0) is less than 1 then the remaining terms need to be estimated
     # using Monte Carlo
     if pc0 < 1:
 
-        # Probability that C = 1
-        pc1 = 1 - pc0
-
         # Add additional terms that are appxoimated using Monte-Carlo
-        for n in range(2, N_l_max + 1):            
-            likelihood += pc1**(n-1) * exp_gamma_convolution_mc(lambda_r, lambda_l, n, t)
+        for n in range(2, N_l_max + 1):
+            likelihood += (_pn(n=n, pc0=pc0, N_l_max=N_l_max) *
+                           exp_gamma_convolution_mc(lambda_r, lambda_l, n, t))
 
     return likelihood
+
+def p_total_lab_time(t_l, lambda_l, pc0, N_l_max):
+    """
+    Description
+    -----------
+        Expression for the probability of total lab time
+
+    Parameters
+    ----------
+        t_l : total lab time
+        lambda_l : rate parameter of p_l
+        pc0 : the probability that C = 0
+        N_l_max : maximum possible number of cycles through the lab
+    
+    Returns
+    -------
+        p_t_l : probability of total lab time equal to t_l
+    """
+
+    p_t_l = 0
+    for n in range(1, N_l_max + 1):
+        p_l = gamma(a=n, scale=1/lambda_l)
+        p_t_l += p_l.pdf(t_l) * _pn(n, pc0, N_l_max)
+    return p_t_l
+
+def _pn(n, pc0, N_l_max):
+    """ Function that evaluates the probability of n lab-visits
+    """
+
+    pc1 = 1 - pc0
+    pn = pc1**(n - 1) * pc0
+    if n == N_l_max:
+        pn += pc1**N_l_max
+    return pn
 
 def exp_gamma_convolution_mc(lambda_r, lambda_l, n, t_rl):
     """
@@ -61,7 +94,7 @@ def exp_gamma_convolution_mc(lambda_r, lambda_l, n, t_rl):
     p_l = gamma(a=n, scale=1/lambda_l)
     
     # Generate samples from exponential distribution
-    N = 10000
+    N = 1000
     t_r_samples = p_r.rvs(N)
     
     # Realise Monte Carlo estimates of convolution integral at point t_rl
