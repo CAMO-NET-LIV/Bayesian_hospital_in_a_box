@@ -39,6 +39,22 @@ def p(theta, t, pc0, N_l_max=None):
     return likelihood
 
 def p_total_lab_time(t_l, lambda_l, pc0, N_l_max):
+    """
+    Description
+    -----------
+        Expression for the probability of total lab time
+
+    Parameters
+    ----------
+        t_l : total lab time
+        lambda_l : rate parameter of p_l
+        pc0 : the probability that C = 0
+        N_l_max : maximum possible number of cycles through the lab
+    
+    Returns
+    -------
+        p_t_l : probability of total lab time equal to t_l
+    """
 
     p_t_l = 0
     for n in range(1, N_l_max + 1):
@@ -47,7 +63,9 @@ def p_total_lab_time(t_l, lambda_l, pc0, N_l_max):
     return p_t_l
 
 def _pn(n, pc0, N_l_max):
-    
+    """ Function that evaluates the probability of n lab-visits
+    """
+
     pc1 = 1 - pc0
     pn = pc1**(n - 1) * pc0
     if n == N_l_max:
