@@ -1,3 +1,5 @@
+from typing import Hashable
+
 import numpy as np
 import salabim as sim
 from bayesian_hospital_in_a_box import likelihood
@@ -7,7 +9,28 @@ sim.yieldless(False)
 
 
 class Specimen(sim.Component):
-    def __init__(self, lambda_r, lambda_l, pc0, n_l_max, log, **kwargs):
+    def __init__(self,
+                 lambda_r: float,
+                 lambda_l: float,
+                 pc0: float,
+                 n_l_max: int,
+                 log: dict,
+                 **kwargs) -> None:
+        """
+        Description
+        -----------
+            Specimen class for DES implementation.
+
+        Parameters
+        ----------
+            - lambda_r : model parameter
+            - lambda_l : model parameter
+            - pc0 : the probability that C = 0
+            - n_l_max : maximum number of cycles through the lab
+            - log : dictionary within which to store results
+            - **kwargs : additional named arguments to pass to parent sim.Component
+        """
+
         super().__init__(**kwargs)
         self.lambda_r = lambda_r
         self.lambda_l = lambda_l
@@ -17,8 +40,23 @@ class Specimen(sim.Component):
         self.log[self.name()] = {}
         self.log[self.name()]['n_times'] = 0
 
-    def timestamp(self, event_name, event_time = None, normalise=False):
-        _time = self.env.now() if not event_time else event_time
+    def timestamp(self,
+                  event_name: str,
+                  event_time: float | None = None,
+                  normalise: bool = False) -> None:
+        """
+        Description
+        -----------
+            Method to store timestamps in the self.log dictionary.
+
+        Parameters
+        ----------
+            - event_name : name of the event
+            - event_time : time at which the event occurred (inferred as now if None)
+            - normalise : whether to normalise the time (i.e. subtract time_collected)
+        """
+
+        _time: float = self.env.now() if not event_time else event_time
         if normalise:
             _time = _time - self.log[self.name()]['time_collected']
         self.log[self.name()][event_name] = event_time if event_time else self.env.now()
@@ -26,7 +64,7 @@ class Specimen(sim.Component):
     def process(self):
         self.timestamp('time_collected')
         yield self.hold(sim.Exponential(rate=self.lambda_r).sample())
-        self.timestamp('time_received', normalise=True)
+        self.timestamp(event_name='time_received', normalise=True)
         for _ in range(self.n_l_max):
             yield self.hold(sim.Exponential(rate=self.lambda_l).sample())
             self.log[self.name()]['n_times'] += 1
@@ -35,28 +73,71 @@ class Specimen(sim.Component):
         self.timestamp('time_completed', normalise=True)
 
 
-def simulate_des(lambda_r,
-                 lambda_l,
-                 pc0,
-                 n_l_max,
-                 n,
-                 seed="*",
-                 print_trace=False) -> dict[str, float]:
-    log = {}
+def simulate_des(theta: tuple[float, ...],
+                 pc0: float,
+                 n_l_max: int,
+                 n_specimens: int,
+                 seed: Hashable = "*",
+                 print_trace: bool = False) -> dict[str, dict[str, float]]:
+    """
+    Description
+    -----------
+        Run a simulation of the DES model.
+
+    Parameters
+    ----------
+        - theta: model parameters (lambda_r, lambda_l)
+        - pc0 : the probability that C = 0
+        - n_l_max : maximum number of cycles through the lab
+        - n_specimens : number of specimens to simulate
+        - seed : random seed, follow salabim convention, default "*" [random]
+        - print_trace : whether to print the trace
+
+    Returns
+    -------
+        - log dictionary of results:
+            - key : specimen name
+            - value : dictionary of results (str: float)
+    """
+    log: dict = {}
+    lambda_r, lambda_l = theta
     env = sim.Environment(random_seed=seed,
                           trace=print_trace)
-    generator = sim.ComponentGenerator(Specimen,
-                                       lambda_r=lambda_r,
-                                       lambda_l=lambda_l,
-                                       pc0=pc0,
-                                       n_l_max=n_l_max,
-                                       number=n,
-                                       log=log)
+    sim.ComponentGenerator(Specimen,
+                           lambda_r=lambda_r,
+                           lambda_l=lambda_l,
+                           pc0=pc0,
+                           n_l_max=n_l_max,
+                           number=n_specimens,
+                           log=log)
     env.run()
     return log
 
 
-def simulated_histogram(log: dict[str, float],
+def save_log_csv(log: dict[str, dict[str, float]],
+                 filename: str) -> None:
+    """
+    Description
+    -----------
+        Save a dictionary of event logs to a CSV file.
+
+    Parameters
+    ----------
+        - log : dictionary of results
+        - filename : name of the file to save the results to
+    """
+
+    import csv
+    with open(filename, 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['specimen', 'time_collected', 'time_received', 'time_completed'])
+        for specimen, results in log.items():
+            writer.writerow([specimen, results['time_collected'],
+                             results['time_received'],
+                             results['time_completed']])
+
+
+def simulated_histogram(log: dict[str, dict[str, float]],
                         theta,
                         pc0,
                         n_l_max) -> None:
@@ -74,8 +155,8 @@ def simulated_histogram(log: dict[str, float],
     p_t = p_t / np.sum(p_t)
 
     fig, ax = plt.subplots()
-    ax.plot(t_bin_centres/60, t_bin_values, 'black', label='Histogram results')
-    ax.plot(t_bin_centres/60, p_t, 'red', label='Monte Carlo estiamte')
+    ax.plot(t_bin_centres / 60, t_bin_values, 'black', label='Histogram results')
+    ax.plot(t_bin_centres / 60, p_t, 'red', label='Monte Carlo estimate')
     ax.set_xlabel('Hours')
     ax.legend()
     plt.show()
