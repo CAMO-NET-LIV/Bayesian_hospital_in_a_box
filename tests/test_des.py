@@ -11,7 +11,7 @@ def test_simulate_des():
                  print_trace=False)
 
 
-def test_simulated_histogram(plots=False):
+def test_simulated_histogram(plots=True):
     log = simulate_des((1/(60*2), 1/(60*8)),
                        0.2,
                        3,
