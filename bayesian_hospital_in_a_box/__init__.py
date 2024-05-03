@@ -1,1 +1,2 @@
 import bayesian_hospital_in_a_box.likelihood
+import bayesian_hospital_in_a_box.des

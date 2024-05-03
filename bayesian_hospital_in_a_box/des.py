@@ -98,6 +98,15 @@ def simulate_des(theta: tuple[float, ...],
         - log dictionary of results:
             - key : specimen name
             - value : dictionary of results (str: float)
+
+    Example
+    -------
+        simulate_des((1/(60*2), 1/(60*8)),
+                     0.2,
+                     3,
+                     10000,
+                     seed=42,
+                     print_trace=False)
     """
     log: dict = {}
     lambda_r, lambda_l = theta
@@ -125,6 +134,16 @@ def save_log_csv(log: dict[str, dict[str, float]],
     ----------
         - log : dictionary of results
         - filename : name of the file to save the results to
+
+    Example
+    -------
+        sim_log = simulate_des((1/(60*2), 1/(60*8)),
+                            0.2,
+                            3,
+                            10000,
+                            seed=42,
+                            print_trace=False)
+        save_log_csv(sim_log, 'results.csv')
     """
 
     import csv
