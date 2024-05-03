@@ -3,8 +3,7 @@ from bayesian_hospital_in_a_box.des import simulated_histogram
 
 
 def test_simulate_des():
-    simulate_des(1/(60*2),
-                 1/(60*8),
+    simulate_des((1/(60*2), 1/(60*8)),
                  0.2,
                  3,
                  10000,
@@ -13,8 +12,7 @@ def test_simulate_des():
 
 
 def test_simulated_histogram(plots=False):
-    log = simulate_des(1/(60*2),
-                       1/(60*8),
+    log = simulate_des((1/(60*2), 1/(60*8)),
                        0.2,
                        3,
                        10000,

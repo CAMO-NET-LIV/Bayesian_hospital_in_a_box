@@ -73,8 +73,7 @@ class Specimen(sim.Component):
         self.timestamp('time_completed', normalise=True)
 
 
-def simulate_des(lambda_r: float,
-                 lambda_l: float,
+def simulate_des(theta: tuple[float, ...],
                  pc0: float,
                  n_l_max: int,
                  n_specimens: int,
@@ -87,8 +86,7 @@ def simulate_des(lambda_r: float,
 
     Parameters
     ----------
-        - lambda_r : model parameter
-        - lambda_l : model parameter
+        - theta: model parameters (lambda_r, lambda_l)
         - pc0 : the probability that C = 0
         - n_l_max : maximum number of cycles through the lab
         - n_specimens : number of specimens to simulate
@@ -102,6 +100,7 @@ def simulate_des(lambda_r: float,
             - value : dictionary of results (str: float)
     """
     log: dict = {}
+    lambda_r, lambda_l = theta
     env = sim.Environment(random_seed=seed,
                           trace=print_trace)
     sim.ComponentGenerator(Specimen,
@@ -115,7 +114,30 @@ def simulate_des(lambda_r: float,
     return log
 
 
-def simulated_histogram(log: dict[str, float],
+def save_log_csv(log: dict[str, dict[str, float]],
+                 filename: str) -> None:
+    """
+    Description
+    -----------
+        Save a dictionary of event logs to a CSV file.
+
+    Parameters
+    ----------
+        - log : dictionary of results
+        - filename : name of the file to save the results to
+    """
+
+    import csv
+    with open(filename, 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['specimen', 'time_collected', 'time_received', 'time_completed'])
+        for specimen, results in log.items():
+            writer.writerow([specimen, results['time_collected'],
+                             results['time_received'],
+                             results['time_completed']])
+
+
+def simulated_histogram(log: dict[str, dict[str, float]],
                         theta,
                         pc0,
                         n_l_max) -> None:
@@ -134,7 +156,7 @@ def simulated_histogram(log: dict[str, float],
 
     fig, ax = plt.subplots()
     ax.plot(t_bin_centres / 60, t_bin_values, 'black', label='Histogram results')
-    ax.plot(t_bin_centres / 60, p_t, 'red', label='Monte Carlo estiamte')
+    ax.plot(t_bin_centres / 60, p_t, 'red', label='Monte Carlo estimate')
     ax.set_xlabel('Hours')
     ax.legend()
     plt.show()
