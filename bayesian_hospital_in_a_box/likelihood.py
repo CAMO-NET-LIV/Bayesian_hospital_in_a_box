@@ -88,26 +88,16 @@ def exp_gamma_convolution_mc(lambda_r, lambda_l, n, t_rl):
     -------
         - mean of F i.e. Monte Carlo estimate of convolution
     """
-    
+ 
     # Define distributions
     p_r = expon(scale=1/lambda_r)
     p_l = gamma(a=n, scale=1/lambda_l)
-    
+ 
     # Generate samples from exponential distribution
     N = 1000
     t_r_samples = p_r.rvs(N)
-    
+ 
     # Realise Monte Carlo estimates of convolution integral at point t_rl
-    F = _f(t_rl - t_r_samples, t_rl, p_l)
+    #F = _f(t_rl - t_r_samples, t_rl, p_l)
+    F = p_l.pdf(t_rl - t_r_samples)
     return np.mean(F)
-
-def _f(t_l, t_r_plus_l, p_l):
-      """ Function that is equal to p_l(t_l) if of t_l are in [0, t_{r+l}]
-        and 0 otherwise. Is used to realise Monte Carlo estimates in the function
-        'exp_gamma_convolution_mc' and is described in Appendix A of the paper.
-      """
-
-      output = p_l.pdf(t_l)               # p_l evaluated over all t_l values
-      zero_locations = t_l > t_r_plus_l   # Locations where t_l \notin [0, t_{r+l}]
-      output[zero_locations] = 0          # Set appropriate locations equal to 0
-      return output
