@@ -11,11 +11,12 @@ def p(theta, t, pc0, N_l_max=None):
     Parameters
     ----------
         - theta : model parameters to be identified (lambda_r, lambda_l)
-        - t : array of total times (i.e. observations)
+        - t : array of total times (i.e. observations). Note this is required
+            to be an array of samples from the same hospital simulation
         - pc0 : the probability that C = 0
         - N_l_max : maximum possible number of cycles through the lab
     """
-    
+ 
     # Extract model parameters
     lambda_r, lambda_l = theta[0], theta[1]
     
