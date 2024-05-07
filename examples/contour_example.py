@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
-#from bayesian_hospital_in_a_box.likelihood import p
-from likelihood import p
+from bayesian_hospital_in_a_box.likelihood import p
 from matplotlib import pyplot as plt
 
 # Load simulation data
@@ -9,11 +8,11 @@ df = pd.read_csv('results.csv')
 t = df['time_completed'].values
 
 # No. of simulation samples we will include
-N_samples = 500
+N_samples = 5
 
 # Range of averge times over which we'll create contour plot
-r_hrs = np.linspace(1, 10, 40)
-l_hrs = np.linspace(1, 10, 40)
+r_hrs = np.linspace(1, 10, 20)
+l_hrs = np.linspace(1, 10, 20)
 
 # Initialise contour
 R_hrs = np.zeros([len(r_hrs), len(l_hrs)])
