@@ -33,7 +33,7 @@ def p(theta, t, pc0, N_l_max=None):
             likelihood += (_pn(n=n, pc0=pc0, N_l_max=N_l_max) *
                            exp_gamma_convolution_mc(lambda_r, lambda_l, n, t))
 
-    return likelihood
+    return np.prod(likelihood)
 
 def p_total_lab_time(t_l, lambda_l, pc0, N_l_max):
     """
@@ -76,7 +76,7 @@ def exp_gamma_convolution_mc(lambda_r, lambda_l, n, t_rl):
         Realises a Monte-Carlo estimate of the convolutation between the
         distributions p_r and p_l, where p_r = Exp(lambda_r) and
         p_l = Gamma(n, lambda_l) (see Appendix A of paper).
-    
+ 
     Parameters
     ----------
         - lambda_r : rate parameter of p_r
@@ -93,11 +93,19 @@ def exp_gamma_convolution_mc(lambda_r, lambda_l, n, t_rl):
     p_r = expon(scale=1/lambda_r)
     p_l = gamma(a=n, scale=1/lambda_l)
  
+    # Dealing with input being float64 rather than array
+    if isinstance(t_rl, np.float64):
+        t_rl = np.array([t_rl])
+
     # Generate samples from exponential distribution
-    N = 1000
-    t_r_samples = p_r.rvs(N)
+    N_MC = 1000
+    N = len(t_rl)
+    t_r_samples = p_r.rvs(N_MC)
  
+    F = np.zeros([N_MC, N])
+    for n in range(N):
+        F[:, n] = t_rl[n] - t_r_samples
+
     # Realise Monte Carlo estimates of convolution integral at point t_rl
-    #F = _f(t_rl - t_r_samples, t_rl, p_l)
-    F = p_l.pdf(t_rl - t_r_samples)
-    return np.mean(F)
+    F = p_l.pdf(F)
+    return np.mean(F, axis=0)

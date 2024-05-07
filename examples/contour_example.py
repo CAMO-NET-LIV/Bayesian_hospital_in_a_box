@@ -3,6 +3,7 @@ import pandas as pd
 from bayesian_hospital_in_a_box.likelihood import p
 from matplotlib import pyplot as plt
 
+
 # Load simulation data
 df = pd.read_csv('results.csv')
 t = df['time_completed'].values
@@ -26,7 +27,9 @@ for i in range(len(r_hrs)):
         L_hrs[i, j] = l_hrs[j]
         theta = [1 / (60 * r_hrs[i]),
                  1 / (60 * l_hrs[j])]
-        P[i, j] *= p(theta, t[:N_samples], pc0=0.2, N_l_max=3)
+        #for n in range(N_samples):
+        #    P[i, j] *= p(theta, t[n], pc0=0.2, N_l_max=3)
+        P[i, j] = p(theta, t[:N_samples], pc0=0.2, N_l_max=3)
 
 # Plot
 plt.contourf(R_hrs, L_hrs, P)
