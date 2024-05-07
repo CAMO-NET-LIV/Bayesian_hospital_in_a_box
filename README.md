@@ -1,6 +1,6 @@
 # Bayesian Hospital-in-a-Box
 Peter L Green, Alessandro Gerada, Conor Rosato
 
-## Installation 
+## Installation (for development)
 ```git clone https://github.com/CAMO-NET-LIV/Bayesian_hospital_in_a_box``` \
-```pip install -m .```
+```python setup.py develop```
