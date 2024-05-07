@@ -36,7 +36,7 @@ def test_first_term(plots=False):
     # Evaluate likelihood at bin centres of histogram
     p_t = np.zeros(len(t_bin_centres))
     for i, t in enumerate(t_bin_centres):
-        p_t[i] = likelihood.p(theta, t, pc0, N_l_max)
+        p_t[i] = np.exp(likelihood.logp(theta, t, pc0, N_l_max))
     
     # Standardise results for comparison
     t_bin_values = t_bin_values / np.sum(t_bin_values)
@@ -201,7 +201,7 @@ def test_p(plots=False):
     # Evaluate likelihood at bin centres of histogram
     p_t = np.zeros(len(t_bin_centres))
     for i, t in enumerate(t_bin_centres):
-        p_t[i] = likelihood.p(theta, t, pc0, N_l_max)
+        p_t[i] = np.exp(likelihood.logp(theta, t, pc0, N_l_max))
 
     # Normalise results so we can compare them
     t_bin_values = t_bin_values / np.sum(t_bin_values)

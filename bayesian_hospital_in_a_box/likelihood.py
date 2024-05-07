@@ -2,11 +2,11 @@ import numpy as np
 from scipy.stats import expon
 from scipy.stats import gamma
 
-def p(theta, t, pc0, N_l_max=None):
+def logp(theta, t, pc0, N_l_max=None):
     """
     Description
     -----------
-        Evaluation of hospital-in-a-box likelihood
+        Evaluation of hospital-in-a-box log-likelihood
     
     Parameters
     ----------
@@ -34,7 +34,7 @@ def p(theta, t, pc0, N_l_max=None):
             likelihood += (_pn(n=n, pc0=pc0, N_l_max=N_l_max) *
                            exp_gamma_convolution_mc(lambda_r, lambda_l, n, t))
 
-    return np.prod(likelihood)
+    return np.sum(np.log(likelihood))
 
 def p_total_lab_time(t_l, lambda_l, pc0, N_l_max):
     """

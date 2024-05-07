@@ -168,7 +168,7 @@ def simulated_histogram(log: dict[str, dict[str, float]],
 
     p_t = np.zeros(len(t_bin_centres))
     for i, t in enumerate(t_bin_centres):
-        p_t[i] = likelihood.p(theta=theta, t=t, pc0=pc0, N_l_max=n_l_max)
+        p_t[i] = np.exp(likelihood.logp(theta=theta, t=t, pc0=pc0, N_l_max=n_l_max))
 
     t_bin_values = t_bin_values / np.sum(t_bin_values)
     p_t = p_t / np.sum(p_t)
