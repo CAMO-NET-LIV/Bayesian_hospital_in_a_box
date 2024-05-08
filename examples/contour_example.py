@@ -38,4 +38,6 @@ for i in range(len(r_hrs)):
 plt.contourf(R_hrs, L_hrs, np.exp(logP))
 plt.xlabel('Transport mean (hours)')
 plt.ylabel('Lab mean (hours)')
+plt.plot(np.array([2]), np.array([8]), 'o', color='red', label='True solution')
+plt.legend()
 plt.show()

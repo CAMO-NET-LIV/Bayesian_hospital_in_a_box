@@ -22,8 +22,11 @@ def logp(theta, t, pc0, N_l_max=None):
     
     # First term in the likelihood
     likelihood = _pn(n=1, pc0=pc0, N_l_max=N_l_max)
-    likelihood *= lambda_r * lambda_l / (lambda_l - lambda_r)
-    likelihood *= (np.exp(-lambda_r * t) - np.exp(-lambda_l * t))
+    if lambda_r == lambda_l:
+        likelihood *= lambda_r**2 * t * np.exp(-lambda_r * t)
+    else:
+        likelihood *= lambda_r * lambda_l / (lambda_l - lambda_r)
+        likelihood *= (np.exp(-lambda_r * t) - np.exp(-lambda_l * t))
 
     # If p(C=0) is less than 1 then the remaining terms need to be estimated
     # using Monte Carlo
