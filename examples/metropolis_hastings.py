@@ -68,4 +68,4 @@ ax[1][1].plot(theta_hrs[:burn_in, 1], np.arange(0, burn_in), 'red', label='Burn 
 ax[1][0].set_xlabel('Transport mean (hours)')
 ax[1][1].set_xlabel('Lab mean (hours)')
 plt.tight_layout()
-plt.show()
+plt.show()s
