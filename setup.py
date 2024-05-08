@@ -8,6 +8,6 @@ setup(
     author='Peter L Green, Alessandro Gerada, Conor Rosato',
     author_email='p.l.green@liverpool.ac.uk',
     packages=packages,
-    install_requires=["numpy", "scipy", "salabim"]
+    install_requires=["numpy", "scipy", "salabim", "pandas", "tqdm"]
 )
 

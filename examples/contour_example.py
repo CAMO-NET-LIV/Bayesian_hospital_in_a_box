@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from bayesian_hospital_in_a_box.likelihood import logp
 from matplotlib import pyplot as plt
-
+from tqdm import tqdm
 
 # Load simulation data
 df = pd.read_csv('results.csv')
@@ -23,7 +23,7 @@ logP = np.ones([len(r_hrs), len(l_hrs)])
 # Create contour with likelihood evaluations
 n = 0
 N_total = len(r_hrs) * len(l_hrs)
-for i in range(len(r_hrs)):
+for i in tqdm(range(len(r_hrs))):
     for j in range(len(l_hrs)):
         R_hrs[i, j] = r_hrs[i]
         L_hrs[i, j] = l_hrs[j]
@@ -32,7 +32,6 @@ for i in range(len(r_hrs)):
         logP[i, j] = logp(theta, t[:N_samples], pc0=0.2, N_l_max=3)
 
         n += 1
-        print(n / N_total * 100, "percent done")
 
 # Plot
 plt.contourf(R_hrs, L_hrs, np.exp(logP))
