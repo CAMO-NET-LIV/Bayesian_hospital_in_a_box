@@ -19,7 +19,7 @@ l_hrs = 3
 theta0 = np.array([1 / (60 * r_hrs), 1 / (60 * l_hrs)])
 
 # MCMC
-N = 1000
+N = 10000
 theta = np.zeros([N, 2])
 theta[0] = theta0
 logp_now = logp(theta0, t, pc0=0.2, N_l_max=3)
@@ -50,9 +50,10 @@ theta_hrs[:, 1] = 1 / (60 * theta[:, 1])
 
 # Plot results
 fig, ax = plt.subplots()
-ax.plot(theta_hrs[:burn_in, 0], theta_hrs[:burn_in, 1], color='red', alpha=0.5)
 ax.plot(theta_hrs[burn_in:, 0], theta_hrs[burn_in:, 1], color='black', alpha=0.5)
 ax.plot(theta_hrs[burn_in:, 0], theta_hrs[burn_in:, 1], 'o', color='black', alpha=0.5)
+ax.plot(theta_hrs[:burn_in, 0], theta_hrs[:burn_in, 1], color='red', alpha=0.5, label='Burn in')
+ax.legend()
 ax.grid()
 ax.set_xlim([1, 10])
 ax.set_ylim([1, 10])
@@ -65,6 +66,8 @@ ax[0][1].hist(theta_hrs[burn_in:, 1])
 ax[1][0].plot(theta_hrs[:, 0], np.arange(0, N), 'black')
 ax[1][0].plot(theta_hrs[:burn_in, 0], np.arange(0, burn_in), 'red')
 ax[1][1].plot(theta_hrs[:, 1], np.arange(0, N), 'black')
-ax[1][1].plot(theta_hrs[:burn_in, 1], np.arange(0, burn_in), 'red')
-
+ax[1][1].plot(theta_hrs[:burn_in, 1], np.arange(0, burn_in), 'red', label='Burn in')
+ax[1][0].set_xlabel('Transport mean (hours)')
+ax[1][1].set_xlabel('Lab mean (hours)')
+plt.tight_layout()
 plt.show()
