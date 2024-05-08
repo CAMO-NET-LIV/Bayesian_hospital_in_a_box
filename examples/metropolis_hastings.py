@@ -29,8 +29,6 @@ for i in range(N-1):
     theta_dash = theta[i, :] + 1e-3 * np.random.randn(2)
     if np.sum(theta_dash < 0) > 0:
         theta[i+1, :] = theta[i, :]
-    elif np.sum(theta_dash > 10) > 0:
-        theta[i+1, :] = theta[i, :]
     else:
         logp_dash = logp(theta_dash, t, pc0=0.2, N_l_max=3)
 
