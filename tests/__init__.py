@@ -1,1 +1,0 @@
-import bayesian_hospital_in_a_box.likelihood
