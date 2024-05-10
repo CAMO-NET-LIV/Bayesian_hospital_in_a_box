@@ -3,6 +3,11 @@ import pandas as pd
 from bayesian_hospital_in_a_box.likelihood import logp
 from matplotlib import pyplot as plt
 
+"""
+Example where we run Metropolis Hastings to estimate
+hospital parameters.
+"""
+
 # Load simulation data
 df = pd.read_csv('results.csv')
 t = df['time_completed'].values
