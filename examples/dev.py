@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 beta_l_true = 4
 beta_r_true = 3
 example1 = case_study1(beta_l_true, beta_r_true)
-example1.generate_data(N=50)
+example1.generate_data(N=10)
 
 # MCMC
 mh = MH()
@@ -24,7 +24,7 @@ plot_MCMC_results(ax=ax[1], samples=theta_joint[:, 1], color='red', label='Joint
 
 # Marginal model
 theta_marginal = mh.sample(N=10000, theta0=np.array([beta_l_true, beta_r_true]),
-                           proposal_cov=np.eye(2),
+                           proposal_cov=5*np.eye(2),
                            log_posterior=example1.marginal_log_posterior)
 
 # Plot results from marginal
