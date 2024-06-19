@@ -62,6 +62,10 @@ class case_study1():
         ans = pm.math.log(J)
         return ans
 
+    def __joint_model_log_likelihood(self, value, t_l, beta_r):
+        exponential = pm.Exponential.dist(scale=beta_r, size=self.N)
+        return pm.logp(exponential, value-t_l)
+
     def sample_marginal_posterior(self, Ns):
 
         model = pm.Model()
@@ -73,3 +77,23 @@ class case_study1():
             initvals = {'beta_l' : 10, 'beta_r' : 1}
             trace = pm.sample(Ns, step=step, initvals=initvals, return_inferencedata=False)
         return trace
+
+    def sample_joint_posterior(self, Ns):
+        model = pm.Model()
+        with model:
+
+            # Priors
+            beta_l = pm.Exponential('beta_l', scale=10, transform=None)
+            beta_r = pm.Exponential('beta_r', scale=10, transform=None)
+            t_l = pm.Exponential('t_l', scale=beta_l, size=self.N, transform=None)
+
+            # Define the custom likelihood
+            pm.CustomDist('logp', t_l, beta_r, logp=self.__joint_model_log_likelihood, observed=self.t_samples)
+
+            # Sample using the Metropolis algorithm
+            step = pm.Metropolis()
+            initvals = {'beta_l' : 10, 'beta_r' : 1, 't_l' : self.t_samples}
+            trace = pm.sample(Ns, step=step, initvals=initvals, return_inferencedata=False)  
+
+        return trace
+    
