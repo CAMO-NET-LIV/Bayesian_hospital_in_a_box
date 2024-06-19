@@ -56,7 +56,7 @@ class case_study1():
         J = 1
         lambda_l = 1 / beta_l
         lambda_r = 1 / beta_r
-        for i in range(N):
+        for i in range(self.N):
             J = J * lambda_r * lambda_l / (lambda_l - lambda_r) * (pm.math.exp(-lambda_r * value[i]) - pm.math.exp(-lambda_l * value[i]))
 
         ans = pm.math.log(J)
