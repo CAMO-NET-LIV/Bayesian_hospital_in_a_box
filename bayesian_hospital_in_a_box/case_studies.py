@@ -96,4 +96,3 @@ class case_study1():
             trace = pm.sample(Ns, step=step, initvals=initvals, return_inferencedata=False)  
 
         return trace
-    
