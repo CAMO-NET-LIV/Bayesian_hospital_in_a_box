@@ -52,7 +52,7 @@ class case_study1():
         self.t_samples = np.array([log[specimen.name()]['time_lab'] for specimen in log])
         self.N = N
 
-    def __marginal_model_log_likelihood(value, beta_l, beta_r):
+    def __marginal_model_log_likelihood(self, value, beta_l, beta_r):
         J = 1
         lambda_l = 1 / beta_l
         lambda_r = 1 / beta_r
