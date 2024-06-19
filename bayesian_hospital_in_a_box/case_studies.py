@@ -62,7 +62,7 @@ class case_study1():
         ans += self.beta_r_prior.logpdf(beta_r)
         
         # Log-prior over lab times
-        pt = expon(scale=beta_l)  
+        pt = expon(scale=beta_l)
         ans += np.sum(pt.logpdf(t_l))
 
         return ans
@@ -102,11 +102,14 @@ class case_study1():
         Log-likelhood for the marginal model (here we compute
         it before taking the logarithm at the end)
         """
+        lambda_l = 1 / beta_l
+        lambda_r = 1 / beta_r
 
-        ans = ((beta_r * beta_l)**-1 * (beta_r**-1 - beta_l**-1)**-1)**self.N
+        ans = 1
         for i in range(self.N):
-            ans *= (np.exp(-beta_l**-1 * self.t_samples[i]) -
-                    np.exp(-beta_r**-1 * self.t_samples[i]))
+            ans *= lambda_r * lambda_l / (lambda_l - lambda_r)
+            ans *= np.exp(-lambda_r * self.t_samples[i])
+            ans *= (1 - np.exp(-(lambda_l - lambda_r) * self.t_samples[i]))
 
         return np.log(ans)
 
